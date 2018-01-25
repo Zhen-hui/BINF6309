@@ -47,21 +47,21 @@ sub seq_returned {
 my $crisprCount = 0;
 
 $seqio_obj = Bio::SeqIO->new(
-	-file   => '>crisprs.fasta',
+	-file   => '>crisprs1.fasta',
 	-format => 'fasta'
 );
 
-# read from hash
-# seq_returned($seqio_obj);
 
 for my $last12Seq ( sort ( keys %last12Counts ) ) {
 
+# read from hash
+	seq_returned($seqio_obj);
 	if ( $last12Counts{$last12Seq} == 1 ) {
 		$crisprCount++;
 
 		my $seq_obj = Bio::Seq->new(
 			-seq        => "$kMerHash{$last12Seq}\n",
-			-display_id => ">crispr1_$crisprCount CRISPR\n",
+			-display_id => ">crispr_$crisprCount CRISPR\n",
 			-alphabet   => "dna"
 		);
 

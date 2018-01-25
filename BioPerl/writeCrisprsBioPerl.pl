@@ -4,7 +4,6 @@ use warnings;
 use diagnostics; 
 use Bio::SeqIO;
 
-# read from file 
 my $seqio_obj = Bio::SeqIO->new(-file => 'dmel-all-chromosome-r6.17.fasta',
 						    	-format => 'fasta');	
 						    		

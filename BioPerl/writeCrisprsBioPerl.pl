@@ -4,15 +4,22 @@ use warnings;
 use diagnostics; 
 use Bio::SeqIO;
 
+# read from file 
 my $seqio_obj = Bio::SeqIO->new(-file => 'dmel-all-chromosome-r6.17.fasta',
-						    	-format => 'fasta');						 
-
+						    	-format => 'fasta');	
+						    		
+while (my $seq_obj = $seqio_obj -> next_seq) {
+	print $seq_obj -> seq, "\n";
+}				
+  					 
 my %kMerHash = (); 
 
 my %last12Counts = ();
 
 sub seq_returned {
 	
+	my $seq_obj = $seqio_obj -> next_seq();
+			
     my $windowSize = 21;
     my $stepSize  = 1;
     my $seqLength = length($seqio_obj);
@@ -33,6 +40,9 @@ sub seq_returned {
 	
 my $crisprCount = 0;
 
+$seqio_obj = Bio::SeqIO->new(-file => '>crisprs.fasta',
+						    	   -format => 'fasta'); 
+						    	
 for my $last12Seq ( sort (keys %last12Counts) ) {
 
 	if ( $last12Counts{$last12Seq} == 1 ) {	
@@ -40,16 +50,12 @@ for my $last12Seq ( sort (keys %last12Counts) ) {
 	
 		my $seq_obj = Bio::Seq->new(-seq=>"$kMerHash{$last12Seq}\n",
                          -display_id => ">crispr_$crisprCount CRISPR\n",                  
-                         -alphabet => "dna" );
-                         
-		my $seqio_obj = Bio::SeqIO->new(-file => '>crisprs.fasta',
-						    	-format => 'fasta'); 
+                         -alphabet => "dna" );   
 
 		$seqio_obj ->write_seq($seq_obj); 
 		
 	}
 }
 
-						    	
 
 

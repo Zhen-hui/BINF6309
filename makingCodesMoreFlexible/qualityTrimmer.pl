@@ -45,15 +45,15 @@ unless ( -e $left and -e $right and $qual and $interleaved ) {
 }
 
 # Creating a seqIO object for Sample.R1.fastq
-my $seqio_obj_R1 = Bio::SeqIO->new(    #-file => 'Sample.R1.fastq',
-	                                   #-format => 'fastq'
+my $seqio_obj_R1 = Bio::SeqIO->new(    -file => <STDIN>,
+	                                   -format => 'fastq'
 );
 
 $left = $seqio_obj_R1->next_seq;
 
 # Creating a seqIO object for Sample.R2.fastq
-my $seqio_obj_R2 = Bio::SeqIO->new(    #-file => 'Sample.R2.fastq',
-	                                   #-format => 'fastq'
+my $seqio_obj_R2 = Bio::SeqIO->new(    -file => <STDIN>,
+	                                   -format => 'fastq'
 );
 
 $right = $seqio_obj_R2->next_seq;
@@ -62,8 +62,8 @@ $right = $seqio_obj_R2->next_seq;
 #my $qual_threshold -> threshold(20);
 
 # Getting longest subsequence that has quality values above the threshold
-my $leftTrimmed  = $left->get_clear_range();
-my $rightTrimmed = $right->get_clear_range();
+my $leftTrimmed  = $left->get_clear_range(<STDIN>);
+my $rightTrimmed = $right->get_clear_range(<STDIN>);
 
 # Copying description from one Bio::Seq to another
 $leftTrimmed->desc( $left->desc() );
@@ -71,8 +71,8 @@ $rightTrimmed->desc( $right->desc() );
 
 # Writing the result to an interleaved fastq file
 
-$interleaved = Bio::SeqIO->new(                 #file => '>Interleaved.fastq',
-	                                            #-format => 'fastq'
+$interleaved = Bio::SeqIO->new(-file => "><STDIN>",
+	                           -format => 'fastq'
 );
 
 $interleaved->write_seq($leftTrimmed);

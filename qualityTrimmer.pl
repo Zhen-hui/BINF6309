@@ -36,6 +36,3 @@ my $interleaved = Bio::SeqIO->new(-file => '>Interleaved.fastq',
 
 $interleaved  ->write_seq($leftTrimmed); 
 $interleaved  ->write_seq($rightTrimmed); 
-
-
-

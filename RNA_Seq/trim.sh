@@ -1,5 +1,5 @@
 #!/bin/sh
-nice -n 19 java /usr/local/programs/Trimmomatic-0.36/trimmomatic-0.36.jar PE \
+nice -n 19 java -jar /usr/local/programs/Trimmomatic-0.36/trimmomatic-0.36.jar PE \
 -threads 1 -phred33 \
 /scratch/AiptasiaMiSeq/fastq/Aip02.R1.fastq \
 /scratch/AiptasiaMiSeq/fastq/Aip02.R2.fastq \

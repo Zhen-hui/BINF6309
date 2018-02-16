@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 <<Comment
 Using trimALL.sh as an example, write a shell script to run gsnap for every paired
@@ -23,15 +23,13 @@ do
 	# Remove the left-read suffix from $pathRemoved and assign to suffix removed
 	sampleName="${pathRemoved/$leftSuffix}"
 	echo $sampleName
-<<Comment2
 	echo nice -n 19 gsnap \
 	-A sam \
 	-s AiptasiaGmapIIT.iit \
 	-D . \
 	-d AiptasiaGmapDb \
-	$fastqPath$sampleName$leftSuffix \
-	$fastqPath$sampleName$rightSuffix \
-#	1>$sampleName.sam 2>$sampleName.err &
-Comment2
+	$samOutPath$sampleName$leftSuffix \
+	$samOutPath$sampleName$rightSuffix \
+	#1>$sampleName.sam 2>$sampleName.err &
 
 done 

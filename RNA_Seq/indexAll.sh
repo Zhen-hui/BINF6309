@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Initialize variable to contain the directory of bam files
-bamPath="/home/trinh.z/BINF6309/RNA_Seq/BAM/"
+
+bamPath="BAM/"
 
 # Initialize variable to contain suffix for  the bam files
 bamSuffix=".sorted.bam"
@@ -16,6 +17,6 @@ do
 	sampleName="${pathRemoved/$bamSuffix/}"
 	#echo $sampleName
 	echo samtools index \
-	$indexPath$sampleName$bamSuffix \
+	$bamPath$sampleName$bamSuffix \
 	#1>$sampleName.index.log 2>$sampleName.index.err &
 done

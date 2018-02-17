@@ -6,7 +6,7 @@ trimmed file and output the sam files to the sam directory
 Comment
 
 # Initialize variable to contain the directory of trimmed fastq files
-FastqPath="/home/trinh.z/BINF6309/RNA_Seq/Paired/"
+FastqPath="Paired/"
 
 # Initialize variable to contain the suffic for the left and right reads 
 leftSuffix=".R1.paired.fastq"
@@ -28,8 +28,8 @@ do
 	-s AiptasiaGmapIIT.iit \
 	-D . \
 	-d AiptasiaGmapDb \
-	$samOutPath$sampleName$leftSuffix \
-	$samOutPath$sampleName$rightSuffix \
+	$fastqPath$sampleName$leftSuffix \
+	$fastqPath$sampleName$rightSuffix \
 	#1>$sampleName.sam 2>$sampleName.err &
 
 done 

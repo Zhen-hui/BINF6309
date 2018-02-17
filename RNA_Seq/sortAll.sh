@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Initialize variable to contain the directory of sam files
-samPath="/home/trinh.z/BINF6309/RNA_Seq/SAM/"
+samPath="SAM/"
 
 # Initialize variable to contain the suffix for the sam files
 samSuffix=".sam"

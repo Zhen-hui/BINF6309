@@ -22,14 +22,14 @@ do
 	pathRemoved="${leftInFile/$fastqPath/}"
 	# Remove the left-read suffix from $pathRemoved and assign to suffix removed
 	sampleName="${pathRemoved/$leftSuffix}"
-	echo $sampleName
-	echo nice -n 19 gsnap \
+	# $sampleName
+	nice -n 19 gsnap \
 	-A sam \
 	-s AiptasiaGmapIIT.iit \
 	-D . \
 	-d AiptasiaGmapDb \
 	$fastqPath$sampleName$leftSuffix \
 	$fastqPath$sampleName$rightSuffix \
-	#1>$sampleName.sam 2>$sampleName.err &
+	1>$sampleName.sam 2>$sampleName.err &
 
 done 

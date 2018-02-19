@@ -9,8 +9,8 @@ Comment
 FastqPath="Paired/"
 
 # Initialize variable to contain the suffic for the left and right reads 
-leftSuffix=".R1.paired.fastq"
-rightSuffix=".R2.paired.fastq"
+leftSuffix=".R1.fastq"
+rightSuffix=".R2.fastq"
 
 # Initialize variables with the desired output path for the sam files
 samOutPath="SAM/"
@@ -22,7 +22,8 @@ do
 	pathRemoved="${leftInFile/$fastqPath/}"
 	# Remove the left-read suffix from $pathRemoved and assign to suffix removed
 	sampleName="${pathRemoved/$leftSuffix}"
-	# $sampleName
+	#echo $sampleName
+
 	nice -n 19 gsnap \
 	-A sam \
 	-s AiptasiaGmapIIT.iit \
@@ -30,6 +31,6 @@ do
 	-d AiptasiaGmapDb \
 	$fastqPath$sampleName$leftSuffix \
 	$fastqPath$sampleName$rightSuffix \
-	1>$sampleName.sam 2>$sampleName.err &
-
+	1>$sampleName.sam 2>$sampleName.err & 
+ 
 done 

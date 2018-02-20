@@ -8,15 +8,15 @@ bamPath="BAM/"
 bamSuffix=".sorted.bam"
 
 # Initialize variable for the output files
-indexPath="BAM/"
+#indexPath="BAM/"
 
 # Loop through all the bam files in the $bamPath
 for bamFile in $bamPath*$bamSuffix
 do
 	pathRemoved="${bamFile/$bamPath/}"
 	sampleName="${pathRemoved/$bamSuffix/}"
-	#echo $sampleName
-	echo samtools index \
+	
+	samtools index \
 	$bamPath$sampleName$bamSuffix \
-	#1>$sampleName.index.log 2>$sampleName.index.err &
+	1>$sampleName.index.log 2>$sampleName.index.err 
 done

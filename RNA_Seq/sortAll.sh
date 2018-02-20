@@ -19,9 +19,9 @@ do
 	pathRemoved="${samFile/$samPath/}"
 	# Remove the suffix from $pathRemoved and assign to $sampleName
 	sampleName="${pathRemoved/$samSuffix/}"
-#	echo $sampleName
-	echo samtools sort \
+	#echo $sampleName
+	samtools sort \
 	$samPath$sampleName$samSuffix \
 	-o $bamOutPath$sampleName$bamSuffix \
-	#1>$sampleName.sort.log 2>sampleName.sort.err & 
+	1>$sampleName.sort.log 2>$sampleName.sort.err 
 done

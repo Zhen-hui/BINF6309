@@ -6,7 +6,7 @@ trimmed file and output the sam files to the sam directory
 Comment
 
 # Initialize variable to contain the directory of trimmed fastq files
-FastqPath="Paired/"
+fastqPath="Paired/"
 
 # Initialize variable to contain the suffic for the left and right reads 
 leftSuffix=".R1.fastq"
@@ -21,8 +21,8 @@ do
 	# Remove the path from filename and assign to pathRemoved
 	pathRemoved="${leftInFile/$fastqPath/}"
 	# Remove the left-read suffix from $pathRemoved and assign to suffix removed
-	sampleName="${pathRemoved/$leftSuffix}"
-	#echo $sampleName
+	sampleName="${pathRemoved/$leftSuffix/}"
+	echo $sampleName
 
 	nice -n 19 gsnap \
 	-A sam \
@@ -31,6 +31,7 @@ do
 	-d AiptasiaGmapDb \
 	$fastqPath$sampleName$leftSuffix \
 	$fastqPath$sampleName$rightSuffix \
-	1>$sampleName.sam 2>$sampleName.err & 
+	1>$samOutPath$sampleName.sam 2>$sampleName.err
  
 done 
+

@@ -1,4 +1,25 @@
+<<<<<<< HEAD
 *.fasta
 /.metadata/
 *.fastq
 *.pptx  
+=======
+*.*
+!*.sh
+!*.pl
+!.gitignore
+/.metadata/
+/.DS_Store
+*.fasta
+*.fastq
+*.sam
+*.bam
+*.bai
+*.err
+*.iit
+*.log
+*.err
+AiptasiaGmapDb/
+trinity_out_dir/
+trinity_de-novo/
+>>>>>>> ff698fc27a3065d34b8fcb67e08b72b814a7dcbc

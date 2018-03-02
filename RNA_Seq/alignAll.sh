@@ -18,20 +18,19 @@ samOutPath="SAM/"
 # Loop through all the paired trimmed files in $fastqPath
 for leftInFile in $fastqPath*$leftSuffix  
 do 
-	# Remove the path from filename and assign to pathRemoved
-	pathRemoved="${leftInFile/$fastqPath/}"
-	# Remove the left-read suffix from $pathRemoved and assign to suffix removed
-	sampleName="${pathRemoved/$leftSuffix/}"
-	echo $sampleName
+	# Remove the path and left-read suffix from filename and assign to sampleName
+	rightInFile="${leftInFile/$leftSuffix/$rightSuffix}"
+	samOutFile="${leftInFile/$leftSuffix/.sam}"
+	samOutFile="${samOutFile/$fastqPath/sam}"
 
 	nice -n 19 gsnap \
 	-A sam \
 	-s AiptasiaGmapIIT.iit \
 	-D . \
 	-d AiptasiaGmapDb \
-	$fastqPath$sampleName$leftSuffix \
-	$fastqPath$sampleName$rightSuffix \
-	1>$samOutPath$sampleName.sam 2>$sampleName.err
+	$leftInFile \
+	$rightInFile \
+	1>$samOutFile 2>$samOutFile.err
  
 done 
 

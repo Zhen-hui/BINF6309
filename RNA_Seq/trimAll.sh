@@ -20,10 +20,8 @@ do
 	# Remove the left-read suffix from $pathRemoved and assign to suffixRemoved
 	sampleName="${pathRemoved/$leftSuffix/}"
 
-#	echo $sampleName	
-
 	nice -n 19 java -jar /usr/local/programs/Trimmomatic-0.36/trimmomatic-0.36.jar PE \
-	-threads 1 -phred33 \
+	-threads 4 -phred33 \
 	$fastqPath$sampleName$leftSuffix \
 	$fastqPath$sampleName$rightSuffix \
 	$pairedOutPath$sampleName$leftSuffix \

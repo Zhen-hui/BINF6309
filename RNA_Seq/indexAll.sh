@@ -1,22 +1,17 @@
 #!/bin/sh
 
 # Initialize variable to contain the directory of bam files
-
+fastqPath="/scratch/AiptasiaMinSeq/fastq"
+leftSuffix=".R1.fastq"
 bamPath="BAM/"
 
-# Initialize variable to contain suffix for  the bam files
-bamSuffix=".sorted.bam"
-
-# Initialize variable for the output files
-#indexPath="BAM/"
-
-# Loop through all the bam files in the $bamPath
-for bamFile in $bamPath*$bamSuffix
+# Loop through all the left-read fastq files in the $fastqPath
+for leftInFile in $fastqPath*$leftSuffix
 do
-	pathRemoved="${bamFile/$bamPath/}"
-	sampleName="${pathRemoved/$bamSuffix/}"
+	pathRemoved="${leftInFile/$fastqPath/}"
+	sampleName="${pathRemoved/$leftSuffix/}"
 	
 	samtools index \
-	$bamPath$sampleName$bamSuffix \
-	1>$sampleName.index.log 2>$sampleName.index.err 
+	$bamPath$sampleName.sorted.bam \
+	1>$bamPath$sampleName.index.log 2>$bamPath$sampleName.index.err 
 done

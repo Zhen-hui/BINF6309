@@ -1,27 +1,21 @@
 #!/bin/sh
 
-# Initialize variable to contain the directory of sam files
-samPath="SAM/"
-
-# Initialize variable to contain the suffix for the sam files
-samSuffix=".sam"
-
-# Initialize variable to contain the suffix for the bam files
-bamSuffix=".sorted.bam"
-
-# Initialize variable with the desired output path for the BAM files
+# Initialize variable to contain the directory of untrimmed fastq files and left read suffix
+fastqPath="/scratch/AiptasiaMiSeq/fastq/"
+leftSuffix=".R1.fastq"
+samPath="SAM/"  
 bamOutPath="BAM/"
 
-# Loop through all the sam files in the $samPath
-for samFile in $samPath*$samSuffix
+# Loop through all the sam files in the $fastqPath
+for leftInFile in $fastqPath*$leftSuffix
 do
 	# Remove the path from filename and assign to pathRemoved
-	pathRemoved="${samFile/$samPath/}"
+	pathRemoved="${leftInFile/$fastqPath/}"
 	# Remove the suffix from $pathRemoved and assign to $sampleName
-	sampleName="${pathRemoved/$samSuffix/}"
+	sampleName="${pathRemoved/$leftSuffix/}"
 	#echo $sampleName
 	samtools sort \
-	$samPath$sampleName$samSuffix \
-	-o $bamOutPath$sampleName$bamSuffix \
-	1>$sampleName.sort.log 2>$sampleName.sort.err 
+	$samPath$sampleName.sam \
+	-o $bamOutPath$sampleName.sorted.bam \
+	1>$bamOutPath$sampleName.sort.log 2>$bamOutPath$sampleName.sort.err 
 done

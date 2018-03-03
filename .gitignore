@@ -3,6 +3,8 @@
 !*.sh
 !*.pl
 !.gitignore
+!*.xprs
+!*.matrix
 /.metadata/
 /.DS_Store
 *.fasta

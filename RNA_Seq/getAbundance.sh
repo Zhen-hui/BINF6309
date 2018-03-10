@@ -5,7 +5,7 @@ trinityPath='/usr/local/programs/trinityrnaseq-2.2.0'
 pairedPath='Paired/'
 leftSuffix='.R1.fastq'
 rightSuffix='.R2.fastq' 
-mkdir -p "$outPath"
+mkdir -p $outPath
 logSuffix='.log'
 errSuffix='.err'
 for leftReads in $pairedPath*$leftSuffix 

@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 # Initialize variable to contain the directory of untrimmed fastq files and left read suffix
 fastqPath="/scratch/AiptasiaMiSeq/fastq/"
 leftSuffix=".R1.fastq"
-samPath="SAM/"  
-bamOutPath="BAM/"
-
+samPath="sam/"  
+bamOutPath="bam/"
+mkdir -p $bamOutPath
 # Loop through all the sam files in the $fastqPath
 for leftInFile in $fastqPath*$leftSuffix
 do

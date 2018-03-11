@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 # Initialize variable to contain the directory of bam files
-fastqPath="/scratch/AiptasiaMinSeq/fastq"
+fastqPath="/scratch/AiptasiaMiSeq/fastq/"
 leftSuffix=".R1.fastq"
-bamPath="BAM/"
+bamOutPath="bam/"
 
 # Loop through all the left-read fastq files in the $fastqPath
 for leftInFile in $fastqPath*$leftSuffix
@@ -12,6 +12,6 @@ do
 	sampleName="${pathRemoved/$leftSuffix/}"
 	
 	samtools index \
-	$bamPath$sampleName.sorted.bam \
-	1>$bamPath$sampleName.index.log 2>$bamPath$sampleName.index.err 
+	$bamOutPath$sampleName.sorted.bam \
+	1>$bamOutPath$sampleName.index.log 2>$bamOutPath$sampleName.index.err 
 done

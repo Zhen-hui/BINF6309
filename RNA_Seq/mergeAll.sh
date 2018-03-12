@@ -3,7 +3,7 @@
 This script merges the 24 bam files into a single bam file because Trinity requires as input a single bam file
 cut
 
-ls BAM/*.sorted.bam > bamIn.txt
+ls bam/*.sorted.bam > bamIn.txt
 samtools merge -b bamIn.txt AipAll.bam \
 1>merge.log 2>merge.err &
 

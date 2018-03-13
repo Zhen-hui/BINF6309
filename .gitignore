@@ -5,6 +5,11 @@
 !.gitignore
 !*.xprs
 !*.matrix
+!*.R
+!*.Rmd
+!*.html
+.Rproj.user
+!*.RProj
 /.metadata/
 /.DS_Store
 *.fasta

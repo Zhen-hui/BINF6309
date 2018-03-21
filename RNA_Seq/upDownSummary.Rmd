@@ -1,0 +1,137 @@
+---
+title: "DESeq2 Up/Down Summary and Plots"
+author: "Chuck Roesel"
+date: "10/28/2017"
+output: html_document
+---
+##Instructions
+Write an R script named upDownSummary.R and add the code shown below. Run line-by-line and check the output.
+
+##Load Libraries
+```{r Load Libraries, message=FALSE, warning=FALSE, paged.print=FALSE}
+library("DESeq2")
+library("RColorBrewer")
+library("pheatmap")
+```
+
+##Load Summarized DE Results
+```{r}
+load("summarizedDeResults.RData")
+```
+
+##Plot Dispersion
+Review information on Dispersion in the [DESeq2 manual](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#dispersion-plot-and-fitting-alternatives)
+```{r}
+plotDispEsts(ddsAll)
+```
+
+##Get Summaries
+Get subsets of genes up-regulated or down-regulated for each factor using a p-value cutoff of .05.
+```{r, echo=TRUE}
+logThreshold=0
+alpha=.05
+upVibrio <- subset(dfBothAnnot, (padj.Vibrio < alpha) & (lfc.Vibrio > logThreshold))
+downVibrio <- subset(dfBothAnnot, (padj.Vibrio < alpha) & (lfc.Vibrio < logThreshold))
+upMenthol <- subset(dfBothAnnot, (padj.Menthol < alpha) & (lfc.Menthol > logThreshold))
+downMenthol <- subset(dfBothAnnot, (padj.Menthol < alpha) & (lfc.Menthol < logThreshold))
+upInter <- subset(dfBothAnnot, (padj.Inter < alpha) & (lfc.Inter > logThreshold))
+downInter <- subset(dfBothAnnot, (padj.Inter < alpha) & (lfc.Inter < logThreshold))
+```
+
+##Vibrio Volcano Plot
+Plot log2 fold change as a function of mean normalized counts. Each point on the graph represents a gene. Red indicates an adjusted p-value of .05 or lower.
+```{r, echo=TRUE}
+DESeq2::plotMA(resVibrio, ylim=c(-10,10), alpha=.05)
+```
+
+##Menthol Volcano Plot
+Plot log2 fold change as a function of mean normalized counts.
+```{r, echo=TRUE}
+DESeq2::plotMA(resMenthol, ylim=c(-10,10), alpha=.05)
+```
+
+```{r, echo=TRUE}
+DESeq2::plotMA(resInter, ylim=c(-10,10), alpha=.05)
+```
+
+
+##Principal Component Analysis
+Perform principal component analysis (PCA) to determine percentage of variation explained by each
+varable. About 40% explained by the first component, and about 13% by the second component.
+
+```{r}
+plotPCA(rldAll, intgroup=c("Vibrio", "Menthol"))
+```
+
+##Venn Diagram
+Make a Venn diagram showing overlap between Vibrio Up, Vibrio Down, Menthol Up, Menthol Down.
+```{r}
+upVibrio$count <- rep(1,nrow(upVibrio))
+downVibrio$count <- rep(1, nrow(downVibrio))
+upMenthol$count <- rep(1, nrow(upMenthol))
+downMenthol$count <- rep(1, nrow(downMenthol))
+upInter$count <- rep(1, nrow(upInter))
+downInter$count <- rep(1, nrow(downInter))
+vibrioCount <- merge(upVibrio, downVibrio, by=0, all=TRUE, suffixes=c("Up", "Down"))
+mentholCount <- merge(upMenthol, downMenthol, by=0, all=TRUE, suffixes=c("Up", "Down"))
+interCount <- merge(upInter, downInter, by=0, all=TRUE, suffixes=c("Up", "Down"))
+rownames(vibrioCount) <- vibrioCount$Row.names
+rownames(mentholCount) <- mentholCount$Row.names
+rownames(interCount) <- interCount$Row.names
+vibrioCount <- subset(vibrioCount, select = -c(Row.names) )
+mentholCount <- subset(mentholCount, select = -c(Row.names) )
+interCount <- subset(interCount, select = -c(Row.names) )
+bothCount <- merge(vibrioCount, mentholCount, by=0, all=TRUE, suffixes=c("Vibrio", "Menthol"))
+rownames(bothCount) <- bothCount$Row.names
+bothCount <- subset(bothCount, select = -c(Row.names) )
+bothCount <- merge(bothCount, interCount, by=0, all=TRUE)
+rownames(bothCount) <- bothCount$Row.names
+bothCount <- subset(bothCount, select = -c(Row.names) )
+bothCount <- subset(bothCount, select = c(countUpVibrio, countDownVibrio, countUpMenthol, 
+                                          countDownMenthol, countUp, countDown) )
+head(bothCount)
+```
+
+###Change NAs to zero
+```{r}
+bothCount$countUpVibrio[is.na(bothCount$countUpVibrio)] <- 0
+bothCount$countDownVibrio[is.na(bothCount$countDownVibrio)] <- 0
+bothCount$countUpMenthol[is.na(bothCount$countUpMenthol)] <- 0
+bothCount$countDownMenthol[is.na(bothCount$countDownMenthol)] <- 0
+bothCount$countUp[is.na(bothCount$countUp)] <- 0
+bothCount$countDown[is.na(bothCount$countDown)] <- 0
+```
+
+##Display Venn Diagram
+```{r}
+library("limma")
+vennDiagram(vennCounts(subset(bothCount, select=c(countUpVibrio, countDownVibrio, countUpMenthol, countDownMenthol, countUp))), names=c("UpVibrio", "DownVibrio","UpMenthol", "DownMenthol", "UpInter"), circle.col=c("red", "green", "blue", "yellow", "coral2"))
+```
+```{r}
+#install.packages("UpSetR")
+library(UpSetR)
+listInput = list(UpVibrio = rownames(upVibrio), UpMenthol= rownames(upMenthol), DownVibrio=rownames(downVibrio), DownMenthol=rownames(downMenthol), UpInteraction=rownames(upInter), DownInteraction=rownames(downInter))
+#listInput
+```
+
+```{r}
+upset(fromList(listInput), order.by = "freq", nsets=6)
+```
+##RLog Transformation
+Perform an rlog transformation on the counts to construct a sample distance matrix. The sample distance matrix provides an measure of how similar overall gene expression patterns are for each sample.
+```{r}
+rldAll <- rlog(ddsAll, blind=FALSE)
+sampleDists <- dist(t(assay(rldAll)))
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(rldAll$Vibrio, rldAll$Menthol, sep="-")
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+```
+
+##Cluster samples based on overall gene expression patterns
+```{r}
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```

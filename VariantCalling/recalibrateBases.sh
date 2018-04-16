@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Step 1: Analyze patterns of covariation in the sequence dataset
-
+# Create GATK report file containing several tables. These tables contain the covariation data that will used in a later step to recalibrate the base qualities of the sequence data. 
 bamDir='noDup/'
 bamSuffix='.bam'
 

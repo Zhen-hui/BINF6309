@@ -4,10 +4,15 @@
 
 bamDir='noDup/'
 bamSuffix='.bam'
+
+# Create a directory for the table outputs 
 tableDir='tables/'
 mkdir -p $tableDir
 
+# Define a function to recalibrate the bases 
 recalibrateBases(){
+
+# Loop through every bam file in the noDup directory 
 for bamFile in $bamDir*$bamSuffix
 do 
 

@@ -1,0 +1,8 @@
+#install.packages("snpStats")
+library(snpStats)
+fam <- read.plink("cornell_canine.fam")
+colnames <- c(dogID,inFam,inFamF,inFamM,sex,pheno)
+pheno <- read.delim("phenotypes.txt",header=TRUE,sep="\t")
+famPheno <- merge(fam, pheno)
+famPheno <- subset(famPheno, select=c(dogID, inFam, inFamF, inFamM, sex, epilepsy_irishWolfhounds))
+write.table(famPheno,file="famEpilepsy.fam",col.names=FALSE, row.names=FALSE,quote=FALSE)

@@ -25,7 +25,7 @@ transcriptsAndSwiss = {}
 for line in blastfile_all_lines:
     transcriptsAndSwiss.update({parseBLAST(line)[0]: parseBLAST(line)[1]}) 
 
-myfile = open("parsed_blast2.txt", "w")
+myfile = open("Outputs/parsed_blast2.txt", "w")
 myfile.write("" + "\t" + "Sp_ds" + "\t" + "Sp_hs" + "\t" + "Sp_log" + "\t" + "Sp_plat" + "\n")
 # Read in the DE transcript file and parse all the fields
 diff_exp = open("../scratch/RNASeq/diffExpr.P1e-3_C2.matrix")

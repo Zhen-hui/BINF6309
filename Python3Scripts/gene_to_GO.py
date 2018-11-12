@@ -73,4 +73,4 @@ if __name__ == "__main__":
     test_records = splitfile("../scratch/go-basic.obo")    
     all_dicts = to_dict(test_records)
     all_annotation = mapProteinToGO("../scratch/gene_association_subset.txt")
-    print_report("gene_to_go.txt")
+    print_report("Outputs/gene_to_go.txt")

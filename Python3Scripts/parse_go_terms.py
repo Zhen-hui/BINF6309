@@ -41,6 +41,6 @@ for record in allrecords:
     GO_dict.update({parseGO(record)[0]:parseGO(record)[1]})
     
 # Iterate through the dictionary and print each parsed record to file
-with open ("parsed_go_terms.txt", "w") as p:
+with open ("Outputs/parsed_go_terms.txt", "w") as p:
     for k in sorted (GO_dict.keys()):
         p.write("%s\t%s \n\n" % (k, GO_dict[k]))

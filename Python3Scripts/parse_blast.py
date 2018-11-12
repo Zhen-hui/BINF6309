@@ -9,7 +9,7 @@ blastfile = open("../scratch/RNASeq/blastp.outfmt6")
 all_lines = blastfile.readlines()
 
 # Open file for writing
-output = open("parsed_blast.txt", "w")
+output = open("Outputs/parsed_blast.txt", "w")
 
 # Grab the transcript ID, isoform, SwissProt ID, and percent of identical matches
 for line in all_lines:

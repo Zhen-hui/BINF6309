@@ -8,6 +8,8 @@
 !*.R
 !*.Rmd
 !*.html
+!*.py
+!*.txt
 .Rproj.user
 !*.RProj
 /.metadata/

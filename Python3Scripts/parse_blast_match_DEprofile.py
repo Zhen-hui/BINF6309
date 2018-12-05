@@ -31,9 +31,9 @@ filepath = "../scratch/RNASeq/blastp.outfmt6"
 with open(filepath) as blastfile:
     blastfile_all_lines = blastfile.readlines()
             
-    filteredDict = {BLAST_record(line).transcript_ID:BLAST_record(line).swissProt_ID 
-                    for line in blastfile_all_lines
-                if analyzeBLAST(BLAST_record(line).identity)}       
+    filteredDict = {blastob.transcript_ID:blastob.swissProt_ID 
+                   for blastob in (BLAST_record(line) for line in blastfile_all_lines)
+                   if analyzeBLAST(blastob.identity)}       
 
 # performs a transcript-to-protein lookup.  Default the protein to the transcript if no match is found.
 DE = DE_MATRIX("../scratch/RNASeq/diffExpr.P1e-3_C2.matrix")

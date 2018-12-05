@@ -3,44 +3,45 @@ Created on Oct 28, 2018
 
 @author: cathytrinh
 '''
-import re
+class BLAST_record():
+    def __init__(self, blastInput):
+        all_fields = blastInput.rstrip('\n').split('\t')
+        
+        self.transcript_ID = all_fields[0].split('|')[0]
+        self.swissProt_ID  = all_fields[1].split('|')[3].split('.')[0]
+        self.identity      = all_fields[2]
+      
+class DE_MATRIX():
+    def __init__(self, DE_FILE_PATH):
+        self.line = [x.split('\t') for x in open(DE_FILE_PATH).readlines()]
 
-# Define a function that parses a single line of BLAST output and returns the transcript ID and SwissProt ID. 
-def parseBLAST(blastoutput):
-    transcriptID = re.split(r"[\t\.\|]", blastoutput)[0]
-    SwissProtID = re.split(r"[\t\.\|]", blastoutput)[6]
-    return(transcriptID, SwissProtID)
-
-# Read in BLAST file and apply the parseBLAST function
-blastfile = open("../scratch/RNASeq/blastp.outfmt6")
-blastfile_all_lines = blastfile.readlines()
-
-# Test the function with one assertion 
-test = blastfile_all_lines[0]
-result = parseBLAST(test)
-assert result == ('c0_g1_i1', 'Q9HGP0')
-
-# Store transcript ID as key, SwissProt ID as value in a dictionary
-transcriptsAndSwiss = {}
-for line in blastfile_all_lines:
-    transcriptsAndSwiss.update({parseBLAST(line)[0]: parseBLAST(line)[1]}) 
-
-myfile = open("Outputs/parsed_blast2.txt", "w")
-myfile.write("" + "\t" + "Sp_ds" + "\t" + "Sp_hs" + "\t" + "Sp_log" + "\t" + "Sp_plat" + "\n")
-# Read in the DE transcript file and parse all the fields
-diff_exp = open("../scratch/RNASeq/diffExpr.P1e-3_C2.matrix")
-diff_exp_all_lines = diff_exp.readlines()
-for row in diff_exp_all_lines[1:]:
-    transcript = re.split(r"\t", row)[0]
-    if transcript in transcriptsAndSwiss.keys():
-        transcript = transcriptsAndSwiss[transcript]
-    Sp_ds = re.split(r"\t", row)[1]
-    Sp_hs = re.split(r"\t", row)[2]
-    Sp_log = re.split(r"\t", row)[3]
-    Sp_plat = re.split(r"\t", row)[4]
-    myfile.write(transcript+ "\t" + Sp_ds + "\t" + Sp_hs + "\t" + Sp_log + "\t" + Sp_plat + "\n")
+# function that will accept a BLAST object and return whether its identity attribute is > 95.
+def analyzeBLAST(pident):
+    if float(pident) > 95:
+        return(True)
+    else:
+        return(False)
     
-# Close files
-blastfile.close()
-diff_exp.close()
-myfile.close()
+# function that accept a tuple and return it as a tab-separated string.
+def tuple_to_string(tupleInput):
+    return('\t'.join(tupleInput))
+
+# loads the BLAST objects into a dictionary.
+filepath = "../scratch/RNASeq/blastp.outfmt6"
+with open(filepath) as blastfile:
+    blastfile_all_lines = blastfile.readlines()
+            
+    filteredDict = {BLAST_record(line).transcript_ID:BLAST_record(line).swissProt_ID 
+                    for line in blastfile_all_lines
+                if analyzeBLAST(BLAST_record(line).identity)}       
+
+# performs a transcript-to-protein lookup.  Default the protein to the transcript if no match is found.
+DE = DE_MATRIX("../scratch/RNASeq/diffExpr.P1e-3_C2.matrix")
+
+# print result to file
+with open("Outputs/parsed_blast2.txt", "w") as out:
+    for x in DE.line:
+        if(x[0] in filteredDict):
+            out.write(filteredDict[x[0]] + "\t" + tuple_to_string(x[1:]))
+        else:
+            out.write(tuple_to_string(x))

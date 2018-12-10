@@ -1,8 +1,4 @@
-'''
-Created on Oct 28, 2018
-
-@author: cathytrinh
-'''
+import sys, re
 class BLAST_record():
     def __init__(self, blastInput):
         all_fields = blastInput.rstrip('\n').split('\t')
@@ -26,22 +22,45 @@ def analyzeBLAST(pident):
 def tuple_to_string(tupleInput):
     return('\t'.join(tupleInput))
 
-# loads the BLAST objects into a dictionary.
-filepath = "../scratch/RNASeq/blastp.outfmt6"
-with open(filepath) as blastfile:
-    blastfile_all_lines = blastfile.readlines()
-            
-    filteredDict = {blastob.transcript_ID:blastob.swissProt_ID 
-                   for blastob in (BLAST_record(line) for line in blastfile_all_lines)
-                   if analyzeBLAST(blastob.identity)}       
-
-# performs a transcript-to-protein lookup.  Default the protein to the transcript if no match is found.
-DE = DE_MATRIX("../scratch/RNASeq/diffExpr.P1e-3_C2.matrix")
-
-# print result to file
-with open("Outputs/parsed_blast2.txt", "w") as out:
-    for x in DE.line:
-        if(x[0] in filteredDict):
-            out.write(filteredDict[x[0]] + "\t" + tuple_to_string(x[1:]))
-        else:
-            out.write(tuple_to_string(x))
+# Modify the program to accept command-line arguments and have it accept 2 file inputs: the blast file and the matrix file. 
+if __name__== "__main__":
+    
+    # Ensure user inouts are correct first 
+    try:
+        blast_de_files = sys.argv
+        blastfile, defile = sys.argv[1], sys.argv[2]
+        assert blastfile.lower().endswith('.outfmt6')       
+        assert re.match('(.*)diffExp.(.*).matrix', defile)
+    
+    except IndexError: 
+        print('Incorrect number of inputs: 3 expected, but only ' + str(len(sys.argv)) + ' provided!\n' +
+              'Note: This program accepts a tabular BLAST output file (XXX.outfmt6) and a \n \
+     Trinity differential expression FPKM matrix (diffExp.XXX.matrix) file as inputs.')
+    
+    except AssertionError:
+        print('Incorrect file type(s)!\n' +
+              'Note: This program accepts a tabular BLAST output file (XXX.outfmt6) and a \n \
+     Trinity differential expression FPKM matrix (diffExp.XXX.matrix) file as inputs.') 
+    
+    else:    
+        # Loads the BLAST objects into a dictionary.
+        with open(blastfile, "r") as blastf:
+            blastfile_all_lines = blastf.readlines()
+                       
+            filteredDict = {blastob.transcript_ID:blastob.swissProt_ID 
+                            for blastob in (BLAST_record(line) for line in blastfile_all_lines)
+                            if analyzeBLAST(blastob.identity)}             
+         
+        # Performs a transcript-to-protein lookup.  
+        DE = DE_MATRIX(defile)
+        with open("matched.txt", "w") as out, open("notmatched.txt", "w") as e:
+            for x in DE.line:
+              
+                if any(val == '' for val in x):
+                    e.write("Skipping line: " + tuple_to_string(x).rstrip('\n') + " with error: line is missing fields\n")
+                      
+                else:
+                    try:
+                        out.write(filteredDict[x[0]] + "\t" + tuple_to_string(x[1:]))
+                    except KeyError:
+                        e.write("Skipping line: " + tuple_to_string(x).rstrip('\n') + "\t with error: no match in BLAST file\n")

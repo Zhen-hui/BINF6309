@@ -7,6 +7,10 @@ use Bio::SeqIO;
 use Getopt::Long;
 use Pod::Usage;
 
+# This script reads in the dmel-all-chromosome.r6.02.fasta file, and save all 21-mers ending in GG form into a hash, where the key is the last 12 positions of the k-mer, and the value is the k-mer.
+# It also creates a second hash to count how many times each 12-mer occurs in the genome.
+# For each 12-mer that only occur once, the corresponding 21-mer is a potential CRISPR, so the program will write the CRISPR to a file.
+
 # Globals
 my $fastaIn = '';
 my $usage = "\n$0 [Options] \n
@@ -14,12 +18,8 @@ Options:
 	- fastaIn          Sequence to be read
 	- help             Show this message
 \n";
-=cut
-GetOptions (
-	'fastaIn=s'            => \$fastaIn,
-	'help'                   => sub {pod2usage($usage);}, 
-) or pod2usage($usage);
-=cut
+
+# Check if fasta file exists 
 unless (-e $fastaIn) {
 		print "Specify file for reading\n";
 	} else {
